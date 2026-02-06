@@ -4,6 +4,7 @@ import static com.google.common.base.Strings.isNullOrEmpty;
 
 import com.snowflake.ingest.streaming.SnowflakeStreamingIngestClient;
 import com.snowflake.ingest.streaming.SnowflakeStreamingIngestClientFactory;
+import com.snowflake.kafka.connector.Constants;
 import com.snowflake.kafka.connector.Constants.KafkaConnectorConfigParams;
 import com.snowflake.kafka.connector.Utils;
 import com.snowflake.kafka.connector.internal.KCLogger;
@@ -211,9 +212,14 @@ public final class StreamingClientManager {
   }
 
   private static String clientName(final Map<String, String> connectorConfig) {
-    return STREAMING_CLIENT_V2_PREFIX_NAME
-        + connectorConfig.getOrDefault(KafkaConnectorConfigParams.NAME, DEFAULT_CLIENT_NAME)
-        + createdClientId.incrementAndGet();
+    String application = connectorConfig.get(KafkaConnectorConfigParams.SNOWFLAKE_APPLICATION);
+    if (application == null) {
+      return STREAMING_CLIENT_V2_PREFIX_NAME + connectorConfig
+              .getOrDefault(KafkaConnectorConfigParams.NAME, DEFAULT_CLIENT_NAME) + createdClientId.incrementAndGet();
+    }
+    LOGGER.debug("using property {} = {} for ingest client name",
+            KafkaConnectorConfigParams.SNOWFLAKE_APPLICATION, application);
+    return application + createdClientId.incrementAndGet();
   }
 
   static Properties getClientProperties(final Map<String, String> connectorConfig) {
@@ -245,7 +251,6 @@ public final class StreamingClientManager {
         final String pipeName,
         final Map<String, String> connectorConfig,
         final StreamingClientProperties streamingClientProperties) {
-
       return SnowflakeStreamingIngestClientFactory.builder(clientName, dbName, schemaName, pipeName)
           .setProperties(getClientProperties(connectorConfig))
           .setParameterOverrides(streamingClientProperties.parameterOverrides)

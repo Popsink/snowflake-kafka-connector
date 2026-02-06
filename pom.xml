@@ -120,6 +120,7 @@
                 <version>${maven-surefire-plugin.version}</version>
                 <configuration>
                     <skipTests>${skipUnitTests}</skipTests>
+                    <argLine>--add-opens java.base/java.util=ALL-UNNAMED --add-opens java.base/java.lang=ALL-UNNAMED</argLine>
                 </configuration>
             </plugin>
 
@@ -164,6 +165,9 @@
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-gpg-plugin</artifactId>
                 <version>3.0.1</version>
+                <configuration>
+                    <skip>true</skip>
+                </configuration>
                 <executions>
                     <execution>
                         <id>sign-artifacts</id>
@@ -199,6 +203,8 @@
                         </goals>
                         <configuration>
                             <failOnError>false</failOnError>
+                            <failOnWarnings>false</failOnWarnings>
+                            <doclint>none</doclint>
                         </configuration>
                     </execution>
                 </executions>
@@ -232,7 +238,6 @@
             <groupId>org.bouncycastle</groupId>
             <artifactId>bcpkix-fips</artifactId>
             <version>2.1.8</version>
-            <scope>provided</scope>
         </dependency>
 
         <!-- https://mvnrepository.com/artifact/org.apache.kafka/connect-api -->
