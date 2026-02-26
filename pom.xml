@@ -12,7 +12,7 @@
 
     <groupId>com.snowflake</groupId>
     <artifactId>snowflake-kafka-connector</artifactId>
-    <version>4.0.0-rc8</version>
+    <version>4.0.0-ppsk-SNAPSHOT</version>
     <packaging>jar</packaging>
     <name>Snowflake Kafka Connector</name>
     <description>Snowflake Kafka Connect Sink Connector</description>
@@ -92,6 +92,17 @@
             </snapshots>
         </repository>
     </repositories>
+
+    <distributionManagement>
+        <repository>
+            <id>artifact-registry-releases</id>
+            <url>artifactregistry://europe-west1-maven.pkg.dev/popsink-common-438615/maven-releases</url>
+        </repository>
+        <snapshotRepository>
+            <id>artifact-registry-snapshots</id>
+            <url>artifactregistry://europe-west1-maven.pkg.dev/popsink-common-438615/maven-snapshots</url>
+        </snapshotRepository>
+    </distributionManagement>
 
     <build>
         <plugins>
@@ -630,6 +641,49 @@
     </dependencies>
 
     <profiles>
+        <profile>
+            <id>gcloud</id>
+            <build>
+                <plugins>
+                    <!-- Deploy to GCP Artifact Registry via the artifactregistry wagon.
+                         default-deploy is bound to phase "none" to prevent it from running
+                         alongside deploy-to-gar and causing a duplicate upload error.
+                         skip=false explicitly overrides the global <skip>true</skip> set in
+                         pluginManagement (which disables the default deploy in favour of
+                         gpg:sign-and-deploy-file for Maven Central releases). -->
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-deploy-plugin</artifactId>
+                        <executions>
+                            <execution>
+                                <id>default-deploy</id>
+                                <phase>none</phase>
+                            </execution>
+                            <execution>
+                                <id>deploy-to-gar</id>
+                                <phase>deploy</phase>
+                                <goals>
+                                    <goal>deploy</goal>
+                                </goals>
+                                <configuration>
+                                    <skip>false</skip>
+                                </configuration>
+                            </execution>
+                        </executions>
+                    </plugin>
+                    <!-- Prevent central-publishing-maven-plugin from routing artifacts to
+                         Maven Central when deploying to GCP Artifact Registry. -->
+                    <plugin>
+                        <groupId>org.sonatype.central</groupId>
+                        <artifactId>central-publishing-maven-plugin</artifactId>
+                        <configuration>
+                            <skip>true</skip>
+                        </configuration>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+
         <profile>
             <id>aws</id>
             <build>
