@@ -85,9 +85,15 @@ public class StreamingClientProperties {
 
     this.isIcebergEnabled = Utils.isIcebergEnabled(connectorConfig);
 
-    this.clientName =
-        STREAMING_CLIENT_PREFIX_NAME
-            + connectorConfig.getOrDefault(Utils.NAME, DEFAULT_CLIENT_NAME);
+    String applicationName = connectorConfig.get(Utils.SNOWFLAKE_APPLICATION);
+    if(applicationName == null) {
+      this.clientName =
+              STREAMING_CLIENT_PREFIX_NAME
+                      + connectorConfig.getOrDefault(Utils.NAME, DEFAULT_CLIENT_NAME);
+    } else {
+      LOGGER.info("using defined property {} = {} for snowpipe client name", Utils.SNOWFLAKE_APPLICATION, applicationName);
+      this.clientName = applicationName;
+    }
 
     // Override only if the streaming client properties are explicitly set in config
     this.parameterOverrides = new HashMap<>();

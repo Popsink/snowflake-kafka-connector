@@ -107,7 +107,7 @@
             <plugin>
                 <groupId>org.jacoco</groupId>
                 <artifactId>jacoco-maven-plugin</artifactId>
-                <version>0.8.2</version>
+                <version>0.8.12</version>
                 <executions>
                     <execution>
                         <id>pre-unit-test</id>
@@ -167,6 +167,7 @@
                 <version>${maven-surefire-plugin.version}</version>
                 <configuration>
                     <skipTests>${skipUnitTests}</skipTests>
+                    <argLine>--add-opens java.base/java.util=ALL-UNNAMED</argLine>
                 </configuration>
             </plugin>
 
@@ -219,6 +220,9 @@
                         </goals>
                     </execution>
                 </executions>
+                <configuration>
+                    <skip>true</skip>
+                </configuration>
             </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
@@ -278,7 +282,6 @@
             <groupId>org.bouncycastle</groupId>
             <artifactId>bcpkix-fips</artifactId>
             <version>2.1.8</version>
-            <scope>provided</scope>
         </dependency>
         <!-- https://mvnrepository.com/artifact/org.apache.kafka/connect-api -->
         <dependency>

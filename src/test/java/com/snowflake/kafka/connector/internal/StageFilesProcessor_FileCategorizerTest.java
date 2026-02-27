@@ -407,7 +407,7 @@ class StageFilesProcessor_FileCategorizerTest {
   @ValueSource(longs = {Long.MIN_VALUE, Long.MAX_VALUE})
   void fileTestFor_SNOW_1642799(long offset) {
     String fileTimestamp = "28 Aug 2024 @ 17:32:40.822 UTC";
-    DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd MMM yyyy '@' HH:mm:ss.SSS z");
+    DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd MMM yyyy '@' HH:mm:ss.SSS z", java.util.Locale.ENGLISH);
     // Parse the string to a ZonedDateTime object
     ZonedDateTime fileTs = ZonedDateTime.parse(fileTimestamp, formatter);
     ArrayList<String> files = new ArrayList<>();
