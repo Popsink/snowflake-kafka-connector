@@ -57,6 +57,7 @@ jobs:
             -Pgcloud \
             -DskipTests \
             -DskipITs \
+            -Dmaven.javadoc.skip=true \
             -Dhttp.keepAlive=false \
             -Dmaven.wagon.http.pool=false \
             -Dmaven.wagon.httpconnectionManager.ttlSeconds=120
