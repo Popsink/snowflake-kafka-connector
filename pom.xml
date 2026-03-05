@@ -169,6 +169,7 @@
                 <version>0.8.0</version>
                 <extensions>true</extensions>
                 <configuration>
+                    <skip>true</skip>
                     <autoPublish>true</autoPublish>
                 </configuration>
             </plugin>
